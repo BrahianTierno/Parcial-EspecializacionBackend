@@ -8,11 +8,10 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 @Data
 @Document
 @RequiredArgsConstructor
-public class Movie {
+public class Serie {
 
     @MongoId
-    private Long id;
+    private String id;
     private String name;
     private String genre;
-    private String urlStream;
 }
