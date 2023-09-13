@@ -4,6 +4,7 @@ import com.dh.catalogservice.client.IMovieClient;
 import com.dh.catalogservice.client.ISerieClient;
 import com.dh.catalogservice.model.Movie;
 import com.dh.catalogservice.model.Serie;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,14 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class CatalogController {
 
-    @Autowired
     private IMovieClient iMovieClient;
-    @Autowired
     private ISerieClient iSerieClient;
 
-    @GetMapping("/movieInstanceId/find")
+    /*@GetMapping("/movieInstanceId/find")
     public ResponseEntity<String> find() {
         return ResponseEntity.ok(iMovieClient.find());
     }
@@ -37,7 +37,7 @@ public class CatalogController {
     public ResponseEntity<List<Serie>> getSerieCatalogByGenre(@PathVariable String genre) {
         return iSerieClient.getSerieByGenre(genre);
     }
-
+*/
     @PostMapping("catalog/movie/save")
     ResponseEntity<Movie> saveMovie(@RequestBody Movie movie) {
         return iMovieClient.saveMovie(movie);
@@ -47,4 +47,5 @@ public class CatalogController {
     ResponseEntity<Serie> saveSerie(@RequestBody Serie serie) {
         return iSerieClient.create(serie);
     }
+
 }
