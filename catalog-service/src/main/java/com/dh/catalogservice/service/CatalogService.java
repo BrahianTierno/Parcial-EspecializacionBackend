@@ -35,6 +35,15 @@ public class CatalogService {
         return moviesRepository.save(movie);
     }
 
+    public List<Movie> findMovieByGenre(String genre) {
+        return moviesRepository.findByGenre(genre);
+    }
+
+    public List<Serie> findSerieByGenre(String genre) {
+        return seriesRepository.findByGenre(genre);
+    }
+
+
 
     /*
 

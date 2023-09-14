@@ -36,6 +36,8 @@ public class CatalogController {
         return catalogService.findAllSeries();
     }
 
+
+
     @CircuitBreaker(name = "dataService", fallbackMethod = "musicServiceUnavailable")
     @Retry(name = "dataService")
     @PostMapping("/catalog/movie/save")
@@ -62,6 +64,16 @@ public class CatalogController {
                 .body("Serie service actualmente no se encuentra disponible");
     }
 
+
+    @GetMapping("/movie/{genre}")
+    ResponseEntity<List<Movie>> getMovieByGenre(@PathVariable String genre) {
+        return ResponseEntity.ok().body(catalogService.findMovieByGenre(genre));
+    }
+
+    @GetMapping("/serie/{genre}")
+    ResponseEntity<List<Serie>> getSerieByGenre(@PathVariable String genre) {
+        return ResponseEntity.ok().body(catalogService.findSerieByGenre(genre));
+    }
 
     /*
 
