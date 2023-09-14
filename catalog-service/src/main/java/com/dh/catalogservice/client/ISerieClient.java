@@ -1,6 +1,7 @@
 package com.dh.catalogservice.client;
 
 import com.dh.catalogservice.model.Serie;
+import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ public interface ISerieClient {
     ResponseEntity<List<Serie>> getAll();
 */
     @PostMapping("/api/v1/series")
+    @Headers("Content-Type: application/json")
     ResponseEntity<Serie> create(@RequestBody Serie serie);
 
 }

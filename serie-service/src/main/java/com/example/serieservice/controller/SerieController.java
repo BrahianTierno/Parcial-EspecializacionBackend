@@ -1,25 +1,34 @@
 package com.example.serieservice.controller;
 
+import com.example.serieservice.api.queue.SerieSender;
 import com.example.serieservice.model.Serie;
 import com.example.serieservice.service.SerieService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.Produces;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * @author vaninagodoy
  */
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/series")
 public class SerieController {
 
     private final SerieService serieService;
 
-    public SerieController(SerieService serieService) {
+    private final SerieSender serieSender;
+
+    /*public SerieController(SerieService serieService) {
         this.serieService = serieService;
-    }
+    }*/
 
     @GetMapping
     public List<Serie> getAll() {
@@ -33,8 +42,11 @@ public class SerieController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String create(@RequestBody Serie serie) {
-        serieService.create(serie);
-        return serie.getId();
+    public ResponseEntity<?> create(@RequestBody Serie serie) {
+        Serie createdSerie = serieService.create(serie);
+        serieSender.send(serie);
+        return ResponseEntity.noContent().build();
+        //ResponseEntity.noContent().build();
+        //ResponseEntity.status(HttpStatus.CREATED).body(createdSerie);
     }
 }

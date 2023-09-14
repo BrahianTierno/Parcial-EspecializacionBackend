@@ -1,4 +1,4 @@
-package com.dh.catalogservice.controller;
+package com.dh.catalogservice.api.controller.controller;
 
 import com.dh.catalogservice.client.IMovieClient;
 import com.dh.catalogservice.client.ISerieClient;
@@ -7,8 +7,10 @@ import com.dh.catalogservice.model.Serie;
 import com.dh.catalogservice.service.CatalogService;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +19,11 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class CatalogController {
 
-    private IMovieClient iMovieClient;
-    private ISerieClient iSerieClient;
+    private final IMovieClient iMovieClient;
+    private final ISerieClient iSerieClient;
     private final CatalogService catalogService;
 
     @GetMapping("/movies")
@@ -34,8 +37,10 @@ public class CatalogController {
     }
 
     @CircuitBreaker(name = "dataService", fallbackMethod = "musicServiceUnavailable")
-    @PostMapping("catalog/movie/save")
+    @Retry(name = "dataService")
+    @PostMapping("/catalog/movie/save")
     ResponseEntity<Movie> saveMovie(@RequestBody Movie movie) {
+        log.info("Intentando conectar con movie-service...");
         return iMovieClient.saveMovie(movie);
     }
 
@@ -45,8 +50,10 @@ public class CatalogController {
     }
 
     @CircuitBreaker(name = "dataService", fallbackMethod = "serieServiceUnavailable")
-    @PostMapping("catalog/serie/save")
+    @Retry(name = "dataService")
+    @PostMapping("/catalog/serie/save")
     ResponseEntity<Serie> saveSerie(@RequestBody Serie serie) {
+        log.info("Intentando conectar con serie-service...");
         return iSerieClient.create(serie);
     }
 
@@ -67,10 +74,8 @@ public class CatalogController {
     public List<Serie> findMovies(@RequestParam (defaultValue = "false") Boolean throwError) {
         return catalogService.findAllSeries(throwError);
     }
-     */
 
-
-    /*@GetMapping("/movieInstanceId/find")
+    @GetMapping("/movieInstanceId/find")
     public ResponseEntity<String> find() {
         return ResponseEntity.ok(iMovieClient.find());
     }

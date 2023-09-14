@@ -27,6 +27,14 @@ public class CatalogService {
         return seriesRepository.findAll();
     }
 
+    public Serie createSerie(Serie serie) {
+        return seriesRepository.save(serie);
+    }
+
+    public Movie createMovie(Movie movie) {
+        return moviesRepository.save(movie);
+    }
+
 
     /*
 
