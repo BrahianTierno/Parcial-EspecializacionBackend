@@ -4,8 +4,12 @@ import com.dh.catalogservice.client.IMovieClient;
 import com.dh.catalogservice.client.ISerieClient;
 import com.dh.catalogservice.model.Movie;
 import com.dh.catalogservice.model.Serie;
+import com.dh.catalogservice.service.CatalogService;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +21,54 @@ public class CatalogController {
 
     private IMovieClient iMovieClient;
     private ISerieClient iSerieClient;
+    private final CatalogService catalogService;
+
+    @GetMapping("/movies")
+    public List<Movie> findSeries()  {
+        return catalogService.findAllMovies();
+    }
+
+    @GetMapping("/series")
+    public List<Serie> findMovies() {
+        return catalogService.findAllSeries();
+    }
+
+    @CircuitBreaker(name = "dataService", fallbackMethod = "musicServiceUnavailable")
+    @PostMapping("catalog/movie/save")
+    ResponseEntity<Movie> saveMovie(@RequestBody Movie movie) {
+        return iMovieClient.saveMovie(movie);
+    }
+
+    public ResponseEntity<String> musicServiceUnavailable(CallNotPermittedException exception) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("Music service actualmente no se encuentra disponible");
+    }
+
+    @CircuitBreaker(name = "dataService", fallbackMethod = "serieServiceUnavailable")
+    @PostMapping("catalog/serie/save")
+    ResponseEntity<Serie> saveSerie(@RequestBody Serie serie) {
+        return iSerieClient.create(serie);
+    }
+
+    public ResponseEntity<String> serieServiceUnavailable(CallNotPermittedException exception) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("Serie service actualmente no se encuentra disponible");
+    }
+
+
+    /*
+
+        @GetMapping("/movies")
+    public List<Movie> findSeries(@RequestParam(defaultValue = "false") Boolean throwError)  {
+        return catalogService.findAllMovies(throwError);
+    }
+
+    @GetMapping("/series")
+    public List<Serie> findMovies(@RequestParam (defaultValue = "false") Boolean throwError) {
+        return catalogService.findAllSeries(throwError);
+    }
+     */
+
 
     /*@GetMapping("/movieInstanceId/find")
     public ResponseEntity<String> find() {
@@ -38,14 +90,5 @@ public class CatalogController {
         return iSerieClient.getSerieByGenre(genre);
     }
 */
-    @PostMapping("catalog/movie/save")
-    ResponseEntity<Movie> saveMovie(@RequestBody Movie movie) {
-        return iMovieClient.saveMovie(movie);
-    }
-
-    @PostMapping("catalog/serie/save")
-    ResponseEntity<Serie> saveSerie(@RequestBody Serie serie) {
-        return iSerieClient.create(serie);
-    }
 
 }

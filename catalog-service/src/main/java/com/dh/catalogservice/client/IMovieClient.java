@@ -15,12 +15,12 @@ import java.util.List;
 @FeignClient(name = "movie-service")
 @LoadBalancerClient(name= "movie-service", configuration = CustomLoadBalancerConfiguration.class )
 public interface IMovieClient {
-
+/*
     @GetMapping("/api/v1/movies/instanceId/find")
     public String find();
     @GetMapping("/api/v1/movies/{genre}")
     ResponseEntity<List<Movie>> getMovieByGenre(@PathVariable String genre);
-
+*/
     @PostMapping("/api/v1/movies/save")
     ResponseEntity<Movie> saveMovie(@RequestBody Movie movie);
 

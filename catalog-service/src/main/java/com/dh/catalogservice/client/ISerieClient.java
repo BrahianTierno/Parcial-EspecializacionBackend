@@ -14,14 +14,14 @@ import java.util.List;
 public interface ISerieClient {
 
     /*@GetMapping("/api/v1/series/instanceId/find")
-    public String find();*/
+    public String find();
 
     @GetMapping("/api/v1/series/{genre}")
     ResponseEntity<List<Serie>> getSerieByGenre(@PathVariable String genre);
 
     @GetMapping("/api/v1/series")
     ResponseEntity<List<Serie>> getAll();
-
+*/
     @PostMapping("/api/v1/series")
     ResponseEntity<Serie> create(@RequestBody Serie serie);
 
