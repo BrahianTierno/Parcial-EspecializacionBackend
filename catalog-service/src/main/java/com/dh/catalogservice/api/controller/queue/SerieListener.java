@@ -16,11 +16,6 @@ public class SerieListener {
 
     @RabbitListener(queues = {"${queue.serie.name}"})
     public void receive(@Payload Serie serie) {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
         catalogService.createSerie(serie);
     }
 }

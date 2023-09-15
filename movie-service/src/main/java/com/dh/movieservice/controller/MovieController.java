@@ -38,8 +38,6 @@ public class MovieController {
         Movie createdmovie = movieService.save(movie);
         movieSender.send(movie);
         return ResponseEntity.noContent().build();
-        //return ResponseEntity.ok().body(movieService.save(movie));
-        //ResponseEntity.status(HttpStatus.CREATED).body(createdmovie);
     }
 
 }

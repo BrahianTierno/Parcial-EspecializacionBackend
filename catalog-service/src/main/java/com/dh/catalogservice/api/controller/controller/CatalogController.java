@@ -22,8 +22,6 @@ import java.util.List;
 @Slf4j
 public class CatalogController {
 
-    private final IMovieClient iMovieClient;
-    private final ISerieClient iSerieClient;
     private final CatalogService catalogService;
 
     @GetMapping("/movies")
@@ -36,76 +34,24 @@ public class CatalogController {
         return catalogService.findAllSeries();
     }
 
-
-
-    @CircuitBreaker(name = "dataService", fallbackMethod = "musicServiceUnavailable")
-    @Retry(name = "dataService")
-    @PostMapping("/catalog/movie/save")
+    @PostMapping("/movie/save")
     ResponseEntity<Movie> saveMovie(@RequestBody Movie movie) {
-        log.info("Intentando conectar con movie-service...");
-        return iMovieClient.saveMovie(movie);
+        return catalogService.saveMovieService(movie);
     }
 
-    public ResponseEntity<String> musicServiceUnavailable(CallNotPermittedException exception) {
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body("Music service actualmente no se encuentra disponible");
-    }
-
-    @CircuitBreaker(name = "dataService", fallbackMethod = "serieServiceUnavailable")
-    @Retry(name = "dataService")
-    @PostMapping("/catalog/serie/save")
+    @PostMapping("/serie/save")
     ResponseEntity<Serie> saveSerie(@RequestBody Serie serie) {
-        log.info("Intentando conectar con serie-service...");
-        return iSerieClient.create(serie);
+        return catalogService.saveSerieService(serie);
     }
 
-    public ResponseEntity<String> serieServiceUnavailable(CallNotPermittedException exception) {
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body("Serie service actualmente no se encuentra disponible");
+    @GetMapping("/movies/{genre}")
+    public List<Movie> getMoviesByGenre(@PathVariable String genre) {
+        return catalogService.findMovieByGenre(genre);
     }
 
-
-    @GetMapping("/movie/{genre}")
-    ResponseEntity<List<Movie>> getMovieByGenre(@PathVariable String genre) {
-        return ResponseEntity.ok().body(catalogService.findMovieByGenre(genre));
+    @GetMapping("/series/{genre}")
+    public List<Serie> getSeriesByGenre(@PathVariable String genre) {
+        return catalogService.findSerieByGenre(genre);
     }
-
-    @GetMapping("/serie/{genre}")
-    ResponseEntity<List<Serie>> getSerieByGenre(@PathVariable String genre) {
-        return ResponseEntity.ok().body(catalogService.findSerieByGenre(genre));
-    }
-
-    /*
-
-        @GetMapping("/movies")
-    public List<Movie> findSeries(@RequestParam(defaultValue = "false") Boolean throwError)  {
-        return catalogService.findAllMovies(throwError);
-    }
-
-    @GetMapping("/series")
-    public List<Serie> findMovies(@RequestParam (defaultValue = "false") Boolean throwError) {
-        return catalogService.findAllSeries(throwError);
-    }
-
-    @GetMapping("/movieInstanceId/find")
-    public ResponseEntity<String> find() {
-        return ResponseEntity.ok(iMovieClient.find());
-    }
-
-    @GetMapping("/catalog/serie/all")
-    public ResponseEntity<List<Serie>> getAllSeries() {
-        return iSerieClient.getAll();
-    }
-
-    @GetMapping("catalog/movie/{genre}")
-    public ResponseEntity<List<Movie>> getMovieCatalogByGenre(@PathVariable String genre) {
-        return iMovieClient.getMovieByGenre(genre);
-    }
-
-    @GetMapping("catalog/serie/{genre}")
-    public ResponseEntity<List<Serie>> getSerieCatalogByGenre(@PathVariable String genre) {
-        return iSerieClient.getSerieByGenre(genre);
-    }
-*/
 
 }

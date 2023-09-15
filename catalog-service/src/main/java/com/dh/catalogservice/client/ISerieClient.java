@@ -14,15 +14,6 @@ import java.util.List;
 @FeignClient(name = "serie-service")
 public interface ISerieClient {
 
-    /*@GetMapping("/api/v1/series/instanceId/find")
-    public String find();
-
-    @GetMapping("/api/v1/series/{genre}")
-    ResponseEntity<List<Serie>> getSerieByGenre(@PathVariable String genre);
-
-    @GetMapping("/api/v1/series")
-    ResponseEntity<List<Serie>> getAll();
-*/
     @PostMapping("/api/v1/series")
     @Headers("Content-Type: application/json")
     ResponseEntity<Serie> create(@RequestBody Serie serie);

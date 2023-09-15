@@ -11,5 +11,5 @@ import java.util.List;
 
 public interface SeriesRepository extends MongoRepository<Serie, Long> {
 
-    List<Serie> findByGenre(String genre);
+    List<Serie> findAllByGenre(String genre);
 }

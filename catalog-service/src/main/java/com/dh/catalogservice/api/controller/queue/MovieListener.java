@@ -16,11 +16,6 @@ public class MovieListener {
 
     @RabbitListener(queues = {"${queue1.movie.name}"})
     public void receive(@Payload Movie movie) {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
         catalogService.createMovie(movie);
     }
 }

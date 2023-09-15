@@ -26,10 +26,6 @@ public class SerieController {
 
     private final SerieSender serieSender;
 
-    /*public SerieController(SerieService serieService) {
-        this.serieService = serieService;
-    }*/
-
     @GetMapping
     public List<Serie> getAll() {
         return serieService.getAll();
@@ -42,11 +38,9 @@ public class SerieController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> create(@RequestBody Serie serie) {
+    public ResponseEntity<Serie> create(@RequestBody Serie serie) {
         Serie createdSerie = serieService.create(serie);
         serieSender.send(serie);
         return ResponseEntity.noContent().build();
-        //ResponseEntity.noContent().build();
-        //ResponseEntity.status(HttpStatus.CREATED).body(createdSerie);
     }
 }
